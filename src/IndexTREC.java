@@ -5,11 +5,13 @@ import java.util.Date;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
 
@@ -70,7 +72,7 @@ public class IndexTREC {
 			// buffer.  But if you do this, increase the max heap
 			// size to the JVM (eg add -Xmx512m or -Xmx1g):
 			//
-			iwc.setRAMBufferSizeMB(256.0);
+			iwc.setRAMBufferSizeMB(512.0);
 
 			IndexWriter writer = new IndexWriter(dir, iwc);
 			indexDocs(writer, docDir);
@@ -84,9 +86,11 @@ public class IndexTREC {
 			// writer.forceMerge(1);
 
 			writer.close();
-
 			Date end = new Date();
+			IndexReader reader = IndexReader.open(FSDirectory.open(new File(indexPath)));
+			int num = reader.numDocs();
 			System.out.println(end.getTime() - start.getTime() + " total milliseconds");
+			System.out.println("Contains " + num + " Documents");
 
 		} catch (IOException e) {
 			System.out.println(" caught a " + e.getClass() +

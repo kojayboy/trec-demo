@@ -98,6 +98,7 @@ public class BatchSearch {
 				break;
 			}
 			
+			System.out.println("line: "+line);
 			String[] pair = line.split(" ", 2);
 			Query query = parser.parse(pair[1]);
 
